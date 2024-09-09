@@ -1,4 +1,6 @@
 const localStorageKey = "@petpucrs"
+const localStorageUserKey = "@petpucrs-user"
+const localStorageLoggedUserKey = "@petpucrs-logged-user"
 
 const products = [{
   id: 1,
@@ -180,4 +182,59 @@ const changeItemQuantity = (index, operation) => {
 
 
   localStorage.setItem(localStorageKey, JSON.stringify(cart))
+}
+
+const updatePetPreviewImg = () => {
+  var imageUrl = document.getElementById('petImageUrl').value;
+  document.getElementById('imagePreview').src = imageUrl || 'https://via.placeholder.com/300';
+}
+
+const bindCreateUserEventListener = () => {
+  document.getElementById('userForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // Collect user data
+    var user = {
+      name: document.getElementById('inputName').value,
+      email: document.getElementById('inputEmail').value,
+      phone: document.getElementById('inputPhone').value,
+      password: document.getElementById('inputPassword').value,
+      birthdate: document.getElementById('inputBirthdate').value,
+      cpf: document.getElementById('inputCPF').value
+    };
+
+    if (user.name && user.email && user.password && user.birthdate && user.cpf) {
+      const usersInLocalStorage = JSON.parse(localStorage.getItem(localStorageUserKey)) || [];
+      if (usersInLocalStorage.some((u) => u.email === user.email)) {
+        alert('Usuário já cadastrado com esse e-mail.');
+        return;
+      }
+
+      usersInLocalStorage.push(user);
+      localStorage.setItem(localStorageUserKey, JSON.stringify(usersInLocalStorage));
+      alert('Usuário cadastrado com sucesso!');
+    } else {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+    }
+  })
+}
+
+const bindLoginEventListener = () => {
+  document.getElementById('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var email = document.getElementById('inputEmail').value;
+    var password = document.getElementById('inputPassword').value;
+
+    const usersInLocalStorage = JSON.parse(localStorage.getItem(localStorageUserKey)) || [];
+    const user = usersInLocalStorage.find((u) => u.email === email && u.password === password);
+
+    if (user) {
+      alert('Login efetuado com sucesso!');
+      localStorage.setItem(localStorageLoggedUserKey, JSON.stringify(user));
+      window.location.href = '/index.html';
+    } else {
+      alert('Usuário ou senha inválidos.');
+    }
+  })
 }
