@@ -7,57 +7,58 @@ const products = [{
   name: "Coleira para cachorro",
   price: 49.99,
   thumbnail: "/images/coleira-vermelha.png",
-  type: "produto"
+  type: "produto",
+  hasVariants: true
 },
 {
   id: 2,
   name: "Tapete Higiênico",
   price: 79.99,
   thumbnail: "/images/tapete-higienico.png",
-  type: "produto"
+  type: "produto",
+  hasVariants: false
 },
 {
   id: 3,
   name: "Tag rastreamento pet",
   price: 199.99,
   thumbnail: "/images/tag-rastreamento.png",
-  type: "produto"
+  type: "produto",
+  hasVariants: true
 },
 {
   id: 4,
   name: "Banho",
   price: 99.99,
   thumbnail: "/images/banho.png",
-  type: "servico"
+  type: "servico",
+  hasVariants: false
 },
 {
   id: 5,
   name: "Banho e Tosa",
   price: 129.99,
   thumbnail: "/images/tosa.png",
-  type: "servico"
+  type: "servico",
+  hasVariants: false
 },
 {
   id: 6,
   name: "Passeio com Guia",
   price: 39.99,
   thumbnail: "/images/passeio.png",
-  type: "servico"
+  type: "servico",
+  hasVariants: false
 }
 ]
 
 const addToCart = (productId) => {
   const cart = JSON.parse(localStorage.getItem(localStorageKey)) || []
 
-  console.log(cart)
-  console.log(productId)
-
   const product = products.find((product) => product.id === productId)
   if (!product) {
     return
   }
-
-  console.log(product)
 
   if (cart.some((item) => item.id === product.id)) {
     alert("Produto já adicionado no carrinho. Altere a quantidade no carrinho.")
@@ -194,7 +195,7 @@ const bindCreateUserEventListener = () => {
     event.preventDefault();
 
     // Collect user data
-    var user = {
+    const user = {
       name: document.getElementById('inputName').value,
       email: document.getElementById('inputEmail').value,
       phone: document.getElementById('inputPhone').value,
@@ -237,4 +238,108 @@ const bindLoginEventListener = () => {
       alert('Usuário ou senha inválidos.');
     }
   })
+}
+
+const bindCreatePetEventListener = () => {
+  document.getElementById('petForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    console.log('chegei aqui')
+    const loggedUser = JSON.parse(localStorage.getItem(localStorageLoggedUserKey));
+    if (!loggedUser) {
+      alert('Nenhum usuário logado');
+      return;
+    }
+
+    console.log(loggedUser)
+    const pet = {
+      name: document.getElementById('petName').value,
+      type: document.getElementById('petType').value,
+      breed: document.getElementById('petBreed').value,
+      imageUrl: document.getElementById('petImageUrl').value,
+    };
+
+    if (pet.name && pet.type && pet.breed && pet.imageUrl) {
+      if (loggedUser.pets) {
+        loggedUser.pets.push(pet);
+      }
+      else {
+        loggedUser.pets = [pet];
+      }
+
+      localStorage.setItem(localStorageLoggedUserKey, JSON.stringify(loggedUser));
+      const users = JSON.parse(localStorage.getItem(localStorageUserKey));
+      const updatedUsers = users.map((u) => u.email === loggedUser.email ? loggedUser : u);
+      localStorage.setItem(localStorageUserKey, JSON.stringify(updatedUsers));
+
+      alert('Pet cadastrado com sucesso!');
+      window.location.href = '/minha-conta.html';
+
+    } else {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+    }
+  })
+}
+
+const renderPets = () => {
+  const loggedUser = JSON.parse(localStorage.getItem(localStorageLoggedUserKey));
+  if (!loggedUser || !loggedUser.pets) {
+    return;
+  }
+
+
+  loggedUser.pets.forEach((pet) => {
+    renderPetItem(pet);
+  })
+}
+
+const renderPetItem = (pet) => {
+  const table = document.getElementById('petsTable');
+  const tr = document.createElement('tr');
+
+  const tdImage = document.createElement('td');
+  const img = document.createElement('img');
+  img.src = pet.imageUrl;
+  img.className = "img-thumbnail small-img";
+  img.alt = "Pet " + pet.name;
+  tdImage.appendChild(img);
+
+  const tdName = document.createElement('td');
+  tdName.textContent = pet.name;
+
+  const tdBtn = document.createElement('td');
+  const btn = document.createElement('button');
+  btn.textContent = 'Remover Pet';
+  btn.className = "btn btn-danger btn-sm";
+  btn.onclick = () => removePet(pet.name);
+  tdBtn.appendChild(btn);
+
+  tr.appendChild(tdImage);
+  tr.appendChild(tdName);
+  tr.appendChild(tdBtn);
+
+  table.appendChild(tr);
+}
+
+const removePet = (petName) => {
+  const loggedUser = JSON.parse(localStorage.getItem(localStorageLoggedUserKey));
+  if (!loggedUser || !loggedUser.pets) {
+    return;
+  }
+
+  const alert = confirm('Deseja realmente remover o pet ' + petName + '?');
+  if (!alert) {
+    return;
+  }
+
+  const updatedPets = loggedUser.pets.filter((pet) => pet.name !== petName);
+  loggedUser.pets = updatedPets;
+
+  localStorage.setItem(localStorageLoggedUserKey, JSON.stringify(loggedUser));
+  const users = JSON.parse(localStorage.getItem(localStorageUserKey));
+  const updatedUsers = users.map((u) => u.email === loggedUser.email ? loggedUser : u);
+  localStorage.setItem(localStorageUserKey, JSON.stringify(updatedUsers));
+
+  alert('Pet removido com sucesso!');
+
+  window.location.reload();
 }

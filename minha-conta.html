@@ -18,7 +18,7 @@
   </style>
 </head>
 
-<body>
+<body onload="renderPets()">
   <header class="bg-success">
     <div class="container">
       <nav class="main-menu d-flex navbar navbar-expand-lg ">
@@ -85,7 +85,7 @@
     <h2>Olá, Marcos!</h2>
     <div class="my-4">
       <h3>Seus Pets Cadastrados</h3>
-      <table class="table">
+      <table class="table" id="petsTable">
         <thead>
           <tr>
             <th>Miniatura</th>
@@ -94,11 +94,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><img src="https://via.placeholder.com/60" alt="Pet" class="img-thumbnail"></td>
-            <td>Fido</td>
-            <td><button class="btn btn-danger btn-sm">Remover Pet</button></td>
-          </tr>
+
         </tbody>
       </table>
       <button class="btn btn-success">Cadastrar Pet</button>

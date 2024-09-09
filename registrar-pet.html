@@ -18,7 +18,7 @@
   </style>
 </head>
 
-<body>
+<body onload="bindCreatePetEventListener()">
   <header class="bg-success">
     <div class="container">
       <nav class="main-menu d-flex navbar navbar-expand-lg ">
@@ -83,7 +83,7 @@
   </header>
   <section id="registar-pet" class="container mt-5 mb-5 full-height">
     <h2>Cadastrar Novo Pet</h2>
-    <form>
+    <form id="petForm">
       <div class="mb-3">
         <label for="petImageUrl" class="form-label">URL da Imagem do Pet</label>
         <input type="url" class="form-control" id="petImageUrl" placeholder="Insira a URL da imagem do seu pet"
