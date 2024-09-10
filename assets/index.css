@@ -1,3 +1,59 @@
-.custom-carousel {
-  max-height: 900px;
+.carousel-item.active img {
+  border: 1px solid #28A745;
+  box-shadow: 0 4px 8px #218D3A;
+}
+
+.color-box,
+.size-box {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.color-box.selected,
+.size-box.selected {
+  border-color: #007bff;
+  background-color: #e7f3ff;
+}
+
+.color-box {
+  height: 30px;
+  width: 30px;
+}
+
+.thumbnail-img {
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.carousel-inner img {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-container {
+  width: 100%;
+}
+
+.carousel-thumbnails {
+  width: 80px;
+}
+
+.full-height {
+  min-height: 80vh;
+}
+
+.small-img {
+  width: 150px;
+}
+
+.empty-cart {
+  display: none;
+}
+
+.div-pointer {
+  cursor: pointer;
 }

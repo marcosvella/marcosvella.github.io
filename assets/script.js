@@ -214,6 +214,7 @@ const bindCreateUserEventListener = () => {
       usersInLocalStorage.push(user);
       localStorage.setItem(localStorageUserKey, JSON.stringify(usersInLocalStorage));
       alert('Usuário cadastrado com sucesso!');
+      window.location.href = '/login.html';
     } else {
       alert('Por favor, preencha todos os campos obrigatórios.');
     }
@@ -233,7 +234,7 @@ const bindLoginEventListener = () => {
     if (user) {
       alert('Login efetuado com sucesso!');
       localStorage.setItem(localStorageLoggedUserKey, JSON.stringify(user));
-      window.location.href = '/index.html';
+      window.location.href = '/minha-conta.html';
     } else {
       alert('Usuário ou senha inválidos.');
     }
@@ -326,8 +327,8 @@ const removePet = (petName) => {
     return;
   }
 
-  const alert = confirm('Deseja realmente remover o pet ' + petName + '?');
-  if (!alert) {
+  const checkAlert = confirm('Deseja realmente remover o pet ' + petName + '?');
+  if (!checkAlert) {
     return;
   }
 
@@ -342,4 +343,22 @@ const removePet = (petName) => {
   alert('Pet removido com sucesso!');
 
   window.location.reload();
+}
+
+const isLoggedIn = () => {
+  const loggedUser = JSON.parse(localStorage.getItem(localStorageLoggedUserKey));
+  if (!loggedUser) {
+    return window.location.href = '/login.html';
+  }
+
+  return window.location.href = '/minha-conta.html';
+}
+
+const notImplemented = () => {
+  alert('Funcionalidade não implementada');
+}
+
+const logout = () => {
+  localStorage.removeItem(localStorageLoggedUserKey);
+  window.location.href = '/index.html';
 }
