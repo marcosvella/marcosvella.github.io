@@ -57,3 +57,93 @@
 .div-pointer {
   cursor: pointer;
 }
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day,
+.weekday {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.weekday {
+  background-color: #007bff;
+  color: #fff;
+  cursor: default;
+  font-weight: bold;
+}
+
+.day:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.day.disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.header {
+  grid-column: span 7;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.today {
+  background-color: #28a745 !important;
+  color: #fff;
+}
+
+.invisible {
+  display: none;
+}
+
+.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+}
+
+/* Responsivo para telas menores */
+@media (max-width: 768px) {
+  .calendar {
+    gap: 5px;
+  }
+
+  .day,
+  .weekday {
+    padding: 15px;
+    font-size: 14px;
+  }
+
+  .header {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .day,
+  .weekday {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .header {
+    font-size: 18px;
+  }
+}

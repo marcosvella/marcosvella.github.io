@@ -52,7 +52,7 @@ const products = [{
 }
 ]
 
-const addToCart = (productId) => {
+const addToCart = (productId, date) => {
   const cart = JSON.parse(localStorage.getItem(localStorageKey)) || []
 
   const product = products.find((product) => product.id === productId)
@@ -66,6 +66,10 @@ const addToCart = (productId) => {
   }
 
   product.quantity = 1
+
+  if (date) {
+    product.selectedDate = date
+  }
 
   cart.push(product)
   localStorage.setItem(localStorageKey, JSON.stringify(cart))
@@ -113,6 +117,12 @@ const renderCartItem = (product) => {
 
   var tdName = document.createElement('td');
   tdName.textContent = product.name
+
+
+  if (product.selectedDate) {
+    const formattedDate = new Date(product.selectedDate).toLocaleDateString('pt-BR')
+    tdName.textContent += ` - ${formattedDate}`
+  }
 
   var tdQuantity = document.createElement('td');
   var btnDecrease = document.createElement('button');
@@ -283,7 +293,15 @@ const bindCreatePetEventListener = () => {
 
 const renderPets = () => {
   const loggedUser = JSON.parse(localStorage.getItem(localStorageLoggedUserKey));
-  if (!loggedUser || !loggedUser.pets) {
+
+
+  if (!loggedUser) {
+    console.log('oi')
+    return window.location.href = '/login.html';
+  }
+  document.getElementById('userNameHeader').innerHTML = `Olá, ${loggedUser.name.split(' ')[0]}!`;
+
+  if (!loggedUser.pets) {
     return;
   }
 
@@ -361,4 +379,83 @@ const notImplemented = () => {
 const logout = () => {
   localStorage.removeItem(localStorageLoggedUserKey);
   window.location.href = '/index.html';
+}
+
+const renderCalendar = () => {
+  const calendarDiv = document.getElementById('modal-agendamentos');
+  calendarDiv.classList.remove('invisible');
+  const calendarElement = document.querySelector('.calendar');
+  const headerElement = document.getElementById('calendarHeader');
+
+  const date = new Date()
+
+  calendarElement.innerHTML = `
+    <div class="header" id="calendarHeader"></div>
+    <div class="weekday">Dom</div>
+    <div class="weekday">Seg</div>
+    <div class="weekday">Ter</div>
+    <div class="weekday">Qua</div>
+    <div class="weekday">Qui</div>
+    <div class="weekday">Sex</div>
+    <div class="weekday">Sáb</div>
+`;
+
+  const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  headerElement.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+  const currentYear = date.getFullYear();
+  const currentMonth = date.getMonth();
+
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+
+  const startDay = firstDayOfMonth.getDay();
+
+  for (let i = 0; i < startDay; i++) {
+    const emptyDiv = document.createElement('div');
+    emptyDiv.classList.add('day', 'disabled');
+    calendarElement.appendChild(emptyDiv);
+  }
+
+  for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.classList.add('day', 'rounded', 'shadow-sm');
+    dayDiv.textContent = day;
+
+    // Verifica se é o dia atual
+    const today = new Date();
+    if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+      dayDiv.classList.add('today'); // Marca o dia atual
+      todayElement = dayDiv;
+    }
+
+    // Adiciona a ação de clicar no dia
+    dayDiv.addEventListener('click', function () {
+      const previousSelected = document.querySelector('.selected');
+      if (previousSelected) {
+        previousSelected.classList.remove('selected');
+      }
+      dayDiv.classList.add('selected');
+    });
+
+    calendarElement.appendChild(dayDiv);
+  }
+}
+
+const addToCartWithDate = (productId) => {
+  const selectedDay = document.querySelector('.selected');
+  if (!selectedDay) {
+    return alert('Por favor, selecione uma data');
+  }
+
+  const selectedDate = selectedDay.textContent;
+  const date = new Date()
+
+  if (selectedDate <= date.getDate()) {
+    return alert('Por favor, selecione uma data futura');
+  }
+
+  date.setDate(selectedDate)
+
+  addToCart(productId, date);
 }
